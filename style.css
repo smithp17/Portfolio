@@ -358,20 +358,70 @@ section {
 }
 
 /* Responsive Layout for Smaller Screens */
+/* About Section Responsive Adjustments */
+#about {
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 2rem;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+}
+
+.section-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping */
+  justify-content: space-between;
+  gap: 2rem; /* Space between image and text */
+  align-items: center;
+}
+
+/* Image styling */
+.section__pic-container {
+  flex-shrink: 0;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.about-pic {
+  width: 100%;
+  max-width: 400px; /* Restrict image size */
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+/* Text container adjustments */
+.about-details-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.text-container {
+  margin-top: 1.5rem;
+}
+
+/* Mobile Adjustments */
 @media screen and (max-width: 768px) {
   .section-container {
-    flex-direction: column; /* Stack image and text vertically on smaller screens */
-  }
-
-  .about-details-container {
-    text-align: center;
-    margin-top: 1.5rem;
+    flex-direction: column; /* Stack image and text vertically */
+    text-align: center; /* Center text */
   }
 
   .about-pic {
     margin: 0 auto; /* Center the image */
+    max-width: 100%; /* Adjust image width for smaller screens */
+  }
+
+  .about-details-container {
+    margin-top: 1rem;
+  }
+
+  .details-container {
+    margin-bottom: 1.5rem; /* Space between experience and education sections */
   }
 }
+
 
 /* EXPERIENCE SECTION - Dark Mode with Hover Effects */
 #experience {
