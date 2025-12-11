@@ -7,7 +7,6 @@ import { BsGithub, BsLinkedin } from "react-icons/bs";
 import { MdDownload } from "react-icons/md";
 import { RiContactsFill } from "react-icons/ri";
 
-
 function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -33,7 +32,7 @@ function HeroSection() {
             <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
               Hey there,
               <br />
-              I'm{" "}
+              I&apos;m{" "}
               <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 {personalData.name}
               </span>
@@ -51,17 +50,18 @@ function HeroSection() {
             {[
               { href: personalData.linkedIn, icon: BsLinkedin, color: "hover:text-blue-400" },
               { href: personalData.github, icon: BsGithub, color: "hover:text-gray-100" },
-              
-            ].map((social, index) => (
-              <Link
-                key={index}
-                href={social.href}
-                target="_blank"
-                className={`p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-gray-400 ${social.color} transition-all duration-300 hover:scale-110 hover:bg-white/10`}
-              >
-                <social.icon size={22} />
-              </Link>
-            ))}
+            ]
+              .filter((social) => typeof social.href === "string" && social.href.length > 0)
+              .map((social, index) => (
+                <Link
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  className={`p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-gray-400 ${social.color} transition-all duration-300 hover:scale-110 hover:bg-white/10`}
+                >
+                  <social.icon size={22} />
+                </Link>
+              ))}
           </div>
 
           {/* CTA Buttons */}
@@ -75,14 +75,16 @@ function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
 
-            <Link
-              href={personalData.resume}
-              target="_blank"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:bg-white/10 hover:scale-105"
-            >
-              <span>Get Resume</span>
-              <MdDownload size={18} className="group-hover:animate-bounce" />
-            </Link>
+            {personalData.resume && (
+              <Link
+                href={personalData.resume}
+                target="_blank"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-white/5 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:bg-white/10 hover:scale-105"
+              >
+                <span>Get Resume</span>
+                <MdDownload size={18} className="group-hover:animate-bounce" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -90,7 +92,7 @@ function HeroSection() {
         <div className="relative">
           {/* Glow effect behind card */}
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-3xl blur-2xl"></div>
-          
+
           <div className="relative bg-slate-900/80 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
             {/* Window Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
@@ -111,11 +113,11 @@ function HeroSection() {
                   <span className="text-pink-400"> = </span>
                   <span className="text-gray-500">{"{"}</span>
                 </div>
-                
+
                 <div className="pl-6">
                   <span className="text-purple-300">name</span>
                   <span className="text-gray-500">: </span>
-                  <span className="text-emerald-400">'Smit Patne'</span>
+                  <span className="text-emerald-400">&apos;Smit Patne&apos;</span>
                   <span className="text-gray-500">,</span>
                 </div>
 
@@ -123,9 +125,9 @@ function HeroSection() {
                   <span className="text-purple-300">skills</span>
                   <span className="text-gray-500">: [</span>
                   <div className="pl-4 text-amber-300">
-                    'React', 'Python', 'AWS',
+                    &apos;React&apos;, &apos;Python&apos;, &apos;AWS&apos;,
                     <br />
-                    'JavaScript', 'MySQL', 'Node.js', 'Docker'
+                    &apos;JavaScript&apos;, &apos;MySQL&apos;, &apos;Node.js&apos;, &apos;Docker&apos;
                   </div>
                   <span className="text-gray-500">],</span>
                 </div>
@@ -164,11 +166,12 @@ function HeroSection() {
                 </div>
 
                 <div className="pl-14 text-gray-300">
-                  <span className="text-cyan-400">this</span>.hardWorker <span className="text-pink-400">&&</span>
+                  <span className="text-cyan-400">this</span>.hardWorker <span className="text-pink-400">&amp;&amp;</span>
                   <br />
-                  <span className="text-cyan-400">this</span>.problemSolver <span className="text-pink-400">&&</span>
+                  <span className="text-cyan-400">this</span>.problemSolver <span className="text-pink-400">&amp;&amp;</span>
                   <br />
-                  <span className="text-cyan-400">this</span>.skills.length <span className="text-pink-400">&gt;=</span> <span className="text-amber-400">5</span>
+                  <span className="text-cyan-400">this</span>.skills.length <span className="text-pink-400">&gt;=</span>{" "}
+                  <span className="text-amber-400">5</span>
                 </div>
 
                 <div className="pl-10">

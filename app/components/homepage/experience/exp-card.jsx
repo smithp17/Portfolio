@@ -42,7 +42,7 @@ function ExpCard({ exp, index, isActive, onClick }) {
                 <div className="w-3 h-3 rounded-full bg-amber-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              
+
               {/* Company Logo & Name */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg overflow-hidden border border-white/10 bg-slate-700/50">
@@ -76,7 +76,9 @@ function ExpCard({ exp, index, isActive, onClick }) {
               <div className="pl-6">
                 <span className="text-purple-300">role</span>
                 <span className="text-gray-500">: </span>
-                <span className="text-emerald-400">"{exp.title}"</span>
+                <span className="text-emerald-400">
+                  {`"${exp.title}"`}
+                </span>
                 <span className="text-gray-500">,</span>
               </div>
 
@@ -84,7 +86,9 @@ function ExpCard({ exp, index, isActive, onClick }) {
               <div className="pl-6">
                 <span className="text-purple-300">duration</span>
                 <span className="text-gray-500">: </span>
-                <span className="text-amber-400">"{exp.duration}"</span>
+                <span className="text-amber-400">
+                  {`"${exp.duration}"`}
+                </span>
                 <span className="text-gray-500">,</span>
               </div>
 
@@ -96,7 +100,9 @@ function ExpCard({ exp, index, isActive, onClick }) {
               <div className="pl-10 flex flex-wrap gap-1">
                 {exp.tools.map((tool, i) => (
                   <React.Fragment key={i}>
-                    <span className="text-cyan-400">"{tool}"</span>
+                    <span className="text-cyan-400">
+                      {`"${tool}"`}
+                    </span>
                     {i < exp.tools.length - 1 && (
                       <span className="text-gray-500">, </span>
                     )}
@@ -112,7 +118,8 @@ function ExpCard({ exp, index, isActive, onClick }) {
                 <span className="text-purple-300">impact</span>
                 <span className="text-gray-500">: </span>
                 <span className="text-gray-400 text-xs leading-relaxed block pl-2 border-l-2 border-cyan-500/30 mt-1">
-                  // {exp.description}
+                  {/* {exp.description} */}
+                  {`// ${exp.description}`}
                 </span>
               </div>
 

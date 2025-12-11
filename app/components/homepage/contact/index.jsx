@@ -1,8 +1,8 @@
 // @flow strict
-import { personalData } from '@/utils/data/personal-data';
-import Link from 'next/link';
+import { personalData } from "@/utils/data/personal-data";
+import Link from "next/link";
 import { BiLogoLinkedin } from "react-icons/bi";
-import { FaPaperPlane, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaPaperPlane, FaMapMarkerAlt } from "react-icons/fa";
 import { IoLogoGithub } from "react-icons/io";
 import { MdEmail } from "react-icons/md";
 
@@ -11,7 +11,7 @@ function ContactSection() {
     <section id="contact" className="relative py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"></div>
-      
+
       {/* Decorative elements */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2"></div>
       <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl"></div>
@@ -27,10 +27,14 @@ function ContactSection() {
             Get In Touch
           </span>
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
-            Let's <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Connect</span>
+            Let&apos;s{" "}
+            <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+              Connect
+            </span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind or just want to say hello? I'd love to hear from you!
+            Have a project in mind or just want to say hello? I&apos;d love to
+            hear from you!
           </p>
         </div>
 
@@ -70,21 +74,38 @@ function ContactSection() {
 
             {/* Social Links */}
             <div className="pt-8 w-full">
-              <p className="text-gray-400 mb-6 text-center lg:text-left">Find me on social media</p>
+              <p className="text-gray-400 mb-6 text-center lg:text-left">
+                Find me on social media
+              </p>
               <div className="flex items-center justify-center lg:justify-start gap-4">
                 {[
-                  { href: personalData.github, icon: IoLogoGithub, color: "from-gray-600 to-gray-800", hoverColor: "hover:shadow-gray-500/25" },
-                  { href: personalData.linkedIn, icon: BiLogoLinkedin, color: "from-blue-500 to-blue-700", hoverColor: "hover:shadow-blue-500/25" },
-                ].map((social, index) => (
-                  <Link
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    className={`p-4 rounded-xl bg-gradient-to-r ${social.color} text-white transition-all duration-300 hover:scale-110 hover:shadow-lg ${social.hoverColor}`}
-                  >
-                    <social.icon size={24} />
-                  </Link>
-                ))}
+                  {
+                    href: personalData.github,
+                    icon: IoLogoGithub,
+                    color: "from-gray-600 to-gray-800",
+                    hoverColor: "hover:shadow-gray-500/25",
+                  },
+                  {
+                    href: personalData.linkedIn,
+                    icon: BiLogoLinkedin,
+                    color: "from-blue-500 to-blue-700",
+                    hoverColor: "hover:shadow-blue-500/25",
+                  },
+                ]
+                  .filter(
+                    (social) =>
+                      typeof social.href === "string" && social.href.length > 0
+                  )
+                  .map((social, index) => (
+                    <Link
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      className={`p-4 rounded-xl bg-gradient-to-r ${social.color} text-white transition-all duration-300 hover:scale-110 hover:shadow-lg ${social.hoverColor}`}
+                    >
+                      <social.icon size={24} />
+                    </Link>
+                  ))}
               </div>
             </div>
 
@@ -94,7 +115,8 @@ function ContactSection() {
                 Quick Response
               </div>
               <p className="text-gray-400 text-sm">
-                I typically respond within 24-48 hours. For urgent matters, feel free to reach out on LinkedIn.
+                I typically respond within 24–48 hours. For urgent matters, feel
+                free to reach out on LinkedIn.
               </p>
             </div>
           </div>
