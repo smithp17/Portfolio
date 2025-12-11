@@ -9,7 +9,7 @@ export const personalData = {
   address: 'Maharashtra, INDIA',
   github: 'https://github.com/smithp17', // Update with your actual GitHub
   
-  linkedIn: 'https://linkedin.com/in/smitpatne', // Update with your actual LinkedIn
+  linkedIn: 'https://www.linkedin.com/in/smit-patne/', // Update with your actual LinkedIn
 
 
   
