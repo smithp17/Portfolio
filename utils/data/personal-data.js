@@ -13,5 +13,5 @@ export const personalData = {
 
 
   
-  resume: "https://drive.google.com/file/d/15UqQGIJws9m_qaOhbjP1F30zdURJthpR/view?usp=sharing" // Update with your actual resume link
+  resume: "https://drive.google.com/file/d/1wPMPItlHkEbuG4xhKAFR6BeqlZSKoIoS/view?usp=sharing" // Update with your actual resume link
 };
