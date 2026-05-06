@@ -1,129 +1,122 @@
-// @flow strict
+"use client";
+
 import { personalData } from "@/utils/data/personal-data";
 import Link from "next/link";
-import { BiLogoLinkedin } from "react-icons/bi";
-import { FaPaperPlane, FaMapMarkerAlt } from "react-icons/fa";
-import { IoLogoGithub } from "react-icons/io";
-import { MdEmail } from "react-icons/md";
+import { BsLinkedin, BsGithub } from "react-icons/bs";
+import { HiOutlineMail } from "react-icons/hi";
+import { HiOutlineMapPin } from "react-icons/hi2";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import SectionHeader from "@/app/components/helper/section-header";
 
-function ContactSection() {
+export default function ContactSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
   return (
-    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"></div>
+    <section id="contact" ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 bg-[#06060f]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=50" alt="" className="w-full h-full object-cover opacity-[0.09]" />
+      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_110%,rgba(124,58,237,0.1),transparent)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:52px_52px]" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      {/* Decorative elements */}
-      <div className="absolute top-1/2 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl"></div>
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <SectionHeader eyebrow="06 — Contact" title="Let's Connect" subtitle="Open to full-time roles, freelance, and interesting collaborations. I respond fast." />
 
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm mb-6">
-            <FaPaperPlane />
-            Get In Touch
-          </span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-4">
-            Let&apos;s{" "}
-            <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-              Connect
-            </span>
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind or just want to say hello? I&apos;d love to
-            hear from you!
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          {/* Contact Info */}
-          <div className="space-y-8 flex flex-col items-center lg:items-start">
-            {/* Info Cards */}
-            <div className="space-y-4 w-full max-w-md">
-              {/* Email */}
-              <div className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative flex items-center gap-4 p-6 bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-white/10 transition-all duration-300 hover:border-white/20">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                    <MdEmail className="text-white" size={24} />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Email</p>
-                    <p className="text-white font-medium">{personalData.email}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left */}
+          <motion.div className="space-y-4"
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.65, delay: 0.2 }}>
+            {[
+              { Icon: HiOutlineMail, label: "Email", value: personalData.email, href: `mailto:${personalData.email}`, bar:"from-pink-500 to-fuchsia-500" },
+              { Icon: HiOutlineMapPin, label: "Location", value: personalData.address, href: null, bar:"from-cyan-500 to-blue-500" },
+            ].map(({ Icon, label, value, href, bar }, i) => (
+              <motion.div key={i} whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300, damping: 22 }}>
+                <div className="relative glass rounded-xl p-5 hover:bg-white/[0.07] transition-all duration-300 overflow-hidden group">
+                  <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${bar}`} />
+                  <div className="flex items-center gap-4">
+                    <div className={`w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 glass`}
+                      style={{ background: "rgba(255,255,255,0.06)" }}>
+                      <Icon size={18} className="text-gray-300" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-gray-600 font-mono tracking-widest uppercase">{label}</p>
+                      {href
+                        ? <Link href={href} className="text-white text-base font-medium hover:text-violet-400 transition-colors duration-200">{value}</Link>
+                        : <p className="text-white text-base font-medium">{value}</p>}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+            ))}
 
-              {/* Location */}
-              <div className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative flex items-center gap-4 p-6 bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-white/10 transition-all duration-300 hover:border-white/20">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                    <FaMapMarkerAlt className="text-white" size={24} />
+            {/* Socials */}
+            <motion.div className="flex gap-3 pt-2"
+              initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ delay: 0.5 }}>
+              {[
+                { href: personalData.github, Icon: BsGithub, label: "GitHub", cls: "hover:text-white hover:border-white/25 hover:bg-white/8" },
+                { href: personalData.linkedIn, Icon: BsLinkedin, label: "LinkedIn", cls: "hover:text-blue-400 hover:border-blue-500/40 hover:bg-blue-500/8" },
+              ].filter(s => s.href).map(({ href, Icon, label, cls }, i) => (
+                <motion.div key={i} whileHover={{ scale: 1.08, y: -3 }} whileTap={{ scale: 0.93 }}>
+                  <Link href={href} target="_blank" aria-label={label}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl glass text-gray-500 text-sm transition-all duration-200 ${cls}`}>
+                    <Icon size={15} /><span>{label}</span>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div className="glass rounded-xl p-4 text-xs text-gray-600 font-mono leading-relaxed"
+              initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}>
+              <span className="text-violet-400">⚡ </span>Typically responds within 24 hours. Prefer messages with context about the role or project.
+            </motion.div>
+          </motion.div>
+
+          {/* Right — Glass terminal */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.65, delay: 0.3 }}>
+            <div className="relative">
+              <motion.div className="absolute -inset-3 rounded-2xl bg-gradient-to-r from-pink-500/12 via-fuchsia-500/8 to-violet-500/12 blur-2xl"
+                animate={{ opacity: [0.4, 0.8, 0.4] }} transition={{ duration: 4, repeat: Infinity }} />
+
+              <div className="relative glass-strong rounded-2xl overflow-hidden">
+                <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/6" style={{ background: "rgba(255,255,255,0.02)" }}>
+                  <div className="flex gap-1.5">
+                    {["#ff5f57","#febc2e","#28c840"].map((c,i) => <div key={i} style={{ background: c }} className="w-2.5 h-2.5 rounded-full opacity-80" />)}
                   </div>
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Location</p>
-                    <p className="text-white font-medium">{personalData.address}</p>
-                  </div>
+                  <span className="flex-1 text-center text-xs text-gray-600 font-mono">send_message.js</span>
                 </div>
-              </div>
-            </div>
 
-            {/* Social Links */}
-            <div className="pt-8 w-full">
-              <p className="text-gray-400 mb-6 text-center lg:text-left">
-                Find me on social media
-              </p>
-              <div className="flex items-center justify-center lg:justify-start gap-4">
-                {[
-                  {
-                    href: personalData.github,
-                    icon: IoLogoGithub,
-                    color: "from-gray-600 to-gray-800",
-                    hoverColor: "hover:shadow-gray-500/25",
-                  },
-                  {
-                    href: personalData.linkedIn,
-                    icon: BiLogoLinkedin,
-                    color: "from-blue-500 to-blue-700",
-                    hoverColor: "hover:shadow-blue-500/25",
-                  },
-                ]
-                  .filter(
-                    (social) =>
-                      typeof social.href === "string" && social.href.length > 0
-                  )
-                  .map((social, index) => (
-                    <Link
-                      key={index}
-                      href={social.href}
-                      target="_blank"
-                      className={`p-4 rounded-xl bg-gradient-to-r ${social.color} text-white transition-all duration-300 hover:scale-110 hover:shadow-lg ${social.hoverColor}`}
-                    >
-                      <social.icon size={24} />
-                    </Link>
+                <div className="p-7 font-mono text-[13px] space-y-1 leading-7">
+                  {[
+                    { indent: false, content: <><span className="text-pink-400">const</span><span className="text-white"> message </span><span className="text-pink-400">= </span><span className="text-gray-600">{"{"}</span></> },
+                    { indent: true, content: <><span className="text-violet-400">to</span><span className="text-gray-600">: </span><span className="text-emerald-400">&quot;{personalData.email}&quot;</span><span className="text-gray-600">,</span></> },
+                    { indent: true, content: <><span className="text-violet-400">subject</span><span className="text-gray-600">: </span><span className="text-amber-400">&quot;Let&apos;s build something!&quot;</span><span className="text-gray-600">,</span></> },
+                    { indent: true, content: <><span className="text-violet-400">from</span><span className="text-gray-600">: </span><span className="text-cyan-400">&quot;you@company.com&quot;</span><span className="text-gray-600">,</span></> },
+                    { indent: true, content: <><span className="text-violet-400">open_to</span><span className="text-gray-600">: </span><span className="text-fuchsia-400">&quot;Full-time / Contract&quot;</span><span className="text-gray-600">,</span></> },
+                    { indent: false, content: <><span className="text-gray-600">{"}"}</span></> },
+                    { indent: false, content: <><span className="text-pink-400">await</span><span className="text-white"> send</span><span className="text-gray-600">(message);</span><motion.span className="inline-block w-2 h-[14px] bg-pink-400 align-middle ml-1.5" animate={{ opacity:[1,0,1] }} transition={{ duration:1, repeat:Infinity }} /></> },
+                  ].map(({ indent, content }, i) => (
+                    <motion.div key={i} className={indent ? "pl-5" : ""}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={isInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ delay: 0.5 + i * 0.1 }}>
+                      {content}
+                    </motion.div>
                   ))}
+                </div>
               </div>
             </div>
-
-            {/* Decorative */}
-            <div className="relative mt-12 p-6 bg-slate-800/30 backdrop-blur-xl rounded-2xl border border-white/5 w-full max-w-md">
-              <div className="absolute -top-3 left-6 px-3 py-1 bg-purple-500/20 rounded-full text-purple-400 text-xs">
-                Quick Response
-              </div>
-              <p className="text-gray-400 text-sm">
-                I typically respond within 24–48 hours. For urgent matters, feel
-                free to reach out on LinkedIn.
-              </p>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
-
-export default ContactSection;

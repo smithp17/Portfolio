@@ -2,60 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: rgb(211, 216, 232);
-}
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background-color: whitesmoke;
+  color: #e4e4e7;
+  background-color: #06060f;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#sticky-card-1 {
-  --index: 1;
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  line-height: 1.15;
 }
 
-#sticky-card-2 {
-  --index: 2;
+code, pre, .font-mono {
+  font-family: var(--font-mono), monospace !important;
 }
 
-#sticky-card-3 {
-  --index: 3;
+::selection {
+  background: rgba(124, 58, 237, 0.35);
+  color: #fff;
 }
 
-#sticky-card-4 {
-  --index: 4;
+/* ── Glass Utilities ── */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
-/* Global CSS or Tailwind Styles */
-.video-card {
-  background-color: #000000; /* dark background for the card */
-  transition: all 0.3s ease-in-out;
-  transform: scale(1);
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+.glass-sm {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.video-card:hover {
-  transform: scale(1.05); /* Slightly increase size on hover */
-  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+.glass-strong {
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-button {
-  transition: all 0.3s ease;
+.glass:hover    { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.13); }
+.glass-sm:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.11); }
+
+/* ── Section rule (Japan Tours style) ── */
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.section-rule::before,
+.section-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
 }
 
-button:hover {
-  background-color: #4c6ef5; /* Highlight on hover for the buttons */
-  transform: scale(1.05); /* Slight button scale on hover */
+/* ── Scrollbar ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Animations ── */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+.animate-float { animation: floatY 4s ease-in-out infinite; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.animate-blink { animation: blink 1s step-end infinite; }
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
 }
 
-.sticky-card {
-  // padding-top: calc(var(--index) * 2.5rem);
-  top: calc(var(--index) * 4rem);
-}
+/* Sticky card */
+#sticky-card-1 { --index: 1; }
+#sticky-card-2 { --index: 2; }
+#sticky-card-3 { --index: 3; }
+#sticky-card-4 { --index: 4; }
+.sticky-card { top: calc(var(--index) * 4rem); }
+
+/* Glow card */
+.glow-container { --spread: 60; }
+.glow-card { --active: 0.15; --start: 0; }
+.glow-card:is(:hover, :focus-visible) { z-index: 2; }

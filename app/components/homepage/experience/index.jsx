@@ -1,207 +1,102 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { experiences } from "@/utils/data/experience";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
-import { BsBriefcaseFill } from "react-icons/bs";
-import ExpCard from "./exp-card";
+import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import SectionHeader from "@/app/components/helper/section-header";
 
-const Experience = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const sliderRef = useRef(null);
+const dots = ["bg-violet-500","bg-cyan-500","bg-emerald-500","bg-amber-500","bg-pink-500"];
+const bars = ["from-violet-500 to-fuchsia-500","from-cyan-500 to-blue-500","from-emerald-500 to-teal-500","from-amber-500 to-orange-500","from-pink-500 to-rose-500"];
 
-  // Auto-scroll effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isDragging) {
-        setActiveIndex((prev) => (prev + 1) % experiences.length);
-      }
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isDragging]);
-
-  // Scroll to active card
-  useEffect(() => {
-    if (sliderRef.current) {
-      const cardWidth = 500;
-      const gap = 24;
-      const scrollPosition = activeIndex * (cardWidth + gap);
-      sliderRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth"
-      });
-    }
-  }, [activeIndex]);
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? experiences.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % experiences.length);
-  };
-
-  const handleMouseDown = (e) => {
-    if (!sliderRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging || !sliderRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  // Touch handlers for mobile
-  const handleTouchStart = (e) => {
-    if (!sliderRef.current) return;
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging || !sliderRef.current) return;
-    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
+export default function Experience() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="experience" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"></div>
+    <section id="experience" ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 bg-[#06060f]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=50" alt="" className="w-full h-full object-cover opacity-[0.09]" />
+      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_80%_50%,rgba(6,182,212,0.05),transparent)]" />
 
-      {/* Animated background elements */}
-      <div className="absolute top-20 right-10 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl"></div>
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <SectionHeader eyebrow="02 — Experience" title="Work Experience" subtitle="Building impactful solutions across startups, agencies, and academia." />
 
-      <div className="relative z-10">
-        {/* Section Header */}
-        <div className="max-w-7xl mx-auto px-6 mb-16">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            <div>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm mb-6">
-                <BsBriefcaseFill className="animate-pulse" />
-                Career Journey
-              </span>
-              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-                Work{" "}
-                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                  Experience
-                </span>
-              </h2>
-              <p className="text-gray-400 max-w-xl">
-                My professional journey through various roles and companies, building impactful solutions.
-              </p>
-            </div>
+        {/* Timeline */}
+        <div className="relative">
+          {/* Line */}
+          <motion.div className="absolute left-[18px] top-2 bottom-4 w-px bg-gradient-to-b from-violet-500/60 via-cyan-500/30 to-transparent"
+            initial={{ scaleY: 0, originY: 0 }}
+            animate={isInView ? { scaleY: 1 } : {}}
+            transition={{ duration: 1.2, delay: 0.4 }} />
 
-            {/* Navigation Arrows */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handlePrev}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-pink-500/50 transition-all duration-300 group"
-              >
-                <FaChevronLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-pink-500/50 transition-all duration-300 group"
-              >
-                <FaChevronRight className="group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </div>
+          <div className="space-y-3">
+            {experiences.map((exp, i) => (
+              <motion.div key={exp.id} className="flex gap-8"
+                initial={{ opacity: 0, x: -24 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.55, delay: 0.2 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}>
+                {/* Dot */}
+                <div className="flex-shrink-0 pt-5 flex flex-col items-center">
+                  <motion.div className={`w-3.5 h-3.5 rounded-full ${dots[i % dots.length]} shadow-lg z-10`}
+                    animate={{ boxShadow: [`0 0 0 0 rgba(139,92,246,0.5)`,`0 0 0 8px rgba(139,92,246,0)`,`0 0 0 0 rgba(139,92,246,0)`] }}
+                    transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.5 }} />
+                </div>
+
+                {/* Glass card */}
+                <motion.div className="flex-1 mb-8 group"
+                  whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300, damping: 22 }}>
+                  <div className="relative glass rounded-xl p-6 hover:bg-white/[0.07] transition-all duration-300 overflow-hidden">
+                    <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${bars[i % bars.length]}`} />
+
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-10 h-10 rounded-lg overflow-hidden glass flex-shrink-0 flex items-center justify-center">
+                        <Image src={exp.image} alt={exp.company} width={40} height={40} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                          <h3 className="text-white font-bold text-sm">{exp.title}</h3>
+                          {i === 0 && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 font-mono">
+                              Current
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-400 text-sm">{exp.company}</p>
+                      </div>
+                      <span className="text-[11px] text-gray-600 font-mono hidden sm:block whitespace-nowrap flex-shrink-0">{exp.duration}</span>
+                    </div>
+
+                    <p className="text-gray-500 text-base leading-relaxed mb-4">{exp.description}</p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {exp.tools.map((t, j) => (
+                        <span key={j} className="text-[11px] px-2.5 py-1 rounded-lg glass text-gray-500 hover:text-violet-300 hover:border-violet-500/30 transition-colors duration-200">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
 
-        {/* Experience Slider */}
-        <div
-          ref={sliderRef}
-          className="flex gap-6 overflow-x-auto pb-8 px-6 lg:px-[calc((100vw-1280px)/2+24px)] cursor-grab active:cursor-grabbing no-scrollbar"
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleMouseUp}
-          onTouchMove={handleTouchMove}
-        >
-          {experiences.map((exp, index) => (
-            <ExpCard
-              key={index}
-              exp={exp}
-              index={index}
-              isActive={index === activeIndex}
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="flex justify-center gap-2 mt-8">
-          {experiences.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === activeIndex
-                  ? "w-8 bg-gradient-to-r from-pink-500 to-purple-500"
-                  : "w-2 bg-white/20 hover:bg-white/40"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Timeline Summary */}
-        <div className="max-w-7xl mx-auto px-6 mt-20">
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 rounded-3xl blur-lg"></div>
-            <div className="relative bg-slate-800/50 backdrop-blur-xl rounded-3xl border border-white/10 p-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="text-center">
-                  <p className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-                    {experiences.length}+
-                  </p>
-                  <p className="text-gray-400 mt-2">Companies</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                    2+
-                  </p>
-                  <p className="text-gray-400 mt-2">Years Experience</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-                    15+
-                  </p>
-                  <p className="text-gray-400 mt-2">Projects Delivered</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-pink-400 bg-clip-text text-transparent">
-                    100%
-                  </p>
-                  <p className="text-gray-400 mt-2">Client Satisfaction</p>
-                </div>
-              </div>
+        {/* Summary */}
+        <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8"
+          initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.8, duration: 0.5 }}>
+          {[{val:`${experiences.length}`,label:"Companies"},{val:"2+",label:"Years"},{val:"15+",label:"Projects"},{val:"100%",label:"Dedication"}].map(({val,label},i)=>(
+            <div key={i} className="glass rounded-xl p-4 text-center hover:border-violet-500/25 transition-colors duration-300 group">
+              <p className="text-2xl font-black text-white group-hover:text-violet-400 transition-colors duration-300">{val}</p>
+              <p className="text-[10px] text-gray-600 font-mono tracking-widest mt-1 uppercase">{label}</p>
             </div>
-          </div>
-        </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
-};
-
-export default Experience;
+}

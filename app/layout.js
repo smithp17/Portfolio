@@ -1,25 +1,49 @@
 import { GoogleTagManager } from "@next/third-parties/google";
-import { Inter } from "next/font/google";
+import { Raleway, Onest, JetBrains_Mono } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Footer from "./components/footer";
 import ScrollToTop from "./components/helper/scroll-to-top";
+import ScrollProgress from "./components/helper/scroll-progress";
+import Spotlight from "./components/helper/spotlight";
 import Navbar from "./components/navbar";
 import "./css/card.scss";
 import "./css/globals.scss";
-const inter = Inter({ subsets: ["latin"] });
+
+// Display font — Raleway: elegant, thin-to-bold contrast, refined
+const raleway = Raleway({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
+// Body font — Onest: humanist, warm, readable
+const onest = Onest({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600"],
+});
+
+// Mono — for code blocks
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500"],
+});
 
 export const metadata = {
-  title: "Portfolio of Smit Patne – Software Developer ",
-
+  title: "Smit Patne — Software Engineer",
   description:
-    "This is the portfolio of Smit Patne. I love to learn new things and I am always open to collaborating with others. I am a quick learner and I am always looking for new challenges.",
+    "Portfolio of Smit Patne. Software engineer specialising in full-stack development, AI systems, and cloud infrastructure.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning
+      className={`${raleway.variable} ${onest.variable} ${mono.variable}`}>
+      <body suppressHydrationWarning>
+        <ScrollProgress />
+        <Spotlight />
         <ToastContainer />
         <main className="min-h-screen relative mx-auto px-6 sm:px-12 lg:max-w-[70rem] xl:max-w-[76rem] 2xl:max-w-[92rem] text-white">
           <Navbar />

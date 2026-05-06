@@ -1,114 +1,57 @@
-// @flow strict
+"use client";
+
 import { educations } from "@/utils/data/educations";
 import Image from "next/image";
-import { BsPersonWorkspace } from "react-icons/bs";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { BsAward } from "react-icons/bs";
+import SectionHeader from "@/app/components/helper/section-header";
 
-import GlowCard from "../../helper/glow-card";
+const bars = ["from-violet-500 to-fuchsia-500","from-cyan-500 to-blue-500"];
 
-function Education() {
+export default function Education() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
   return (
-    <div id="education" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-
-      {/* Background Image */}
-      <Image
-        src="/image/Smit_image.png"
-        alt="Smit Image"
-        width={400}
-        height={200}
-        className="absolute top-0 -z-10 opacity-20 object-contain"
-      />
-
-      {/* Divider line */}
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent w-full" />
-        </div>
+    <section id="education" ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 bg-[#06060f]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=50" alt="" className="w-full h-full object-cover opacity-[0.09]" />
       </div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_90%_30%,rgba(6,182,212,0.05),transparent)]" />
 
-      {/* Section Title */}
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex items-center">
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-          <span className="bg-[#2F2F2F] w-fit text-amber p-2 px-5 text-xl rounded-md">
-            Education
-          </span>
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-        </div>
-      </div>
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <SectionHeader eyebrow="05 — Education" title="Education & Degrees" />
 
-      {/* Main Content */}
-      <div className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-
-          {/* LEFT SIDE — Your Image */}
-          <div className="flex justify-center items-start">
-            <Image
-              src="/image/Smith_image.png"
-              alt="Smit Image"
-              width={350}
-              height={350}
-              className="rounded-xl shadow-lg object-cover"
-            />
-          </div>
-
-          {/* RIGHT SIDE — Cards */}
-          <div>
-            <div className="flex flex-col gap-6">
-              {educations.map((education) => (
-                <GlowCard key={education.id} identifier={`education-${education.id}`}>
-                  <div className="p-3 relative">
-
-                    {/* Duration */}
-                    <div className="flex justify-center">
-                      <p className="text-xl font-bold text-[#fff]">
-                        {education.duration}
-                      </p>
-                    </div>
-
-                    {/* Card Inside */}
-                    <div className="flex items-center gap-x-8 px-3 py-5">
-
-                      {/* Left Icon + Text */}
-                      <div className="flex items-center gap-x-4">
-                        <div className="text-[#ffbf00] transition-all duration-300 hover:scale-125">
-                          <BsPersonWorkspace size={36} />
-                        </div>
-
-                        <div>
-                          <p className="text-[#4beba0] sm:text-xl mb-2 font-medium uppercase">
-                            {education.title}
-                          </p>
-                          <p className="text-sm sm:text-base">
-                            {education.institution}
-                          </p>
-                          <p className="text-md sm:text-base text-[#ffbf00]">
-                            {education.gpa}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Right Image */}
-                      <div className="ml-auto w-1/3 flex justify-end">
-                        <Image
-                          src={education.image}
-                          alt="Education Image"
-                          width={150}
-                          height={150}
-                          className="rounded-md object-cover"
-                        />
-                      </div>
-
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {educations.map((edu, i) => (
+            <motion.div key={edu.id}
+              initial={{ opacity: 0, y: 28 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.15 + i * 0.15 }}
+              whileHover={{ y: -5 }}>
+              <div className="relative glass rounded-2xl p-6 overflow-hidden hover:bg-white/[0.07] transition-all duration-300 group">
+                <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${bars[i % bars.length]}`} />
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden glass flex-shrink-0 bg-white/5 flex items-center justify-center p-1">
+                    <Image src={edu.image} alt={edu.institution} width={56} height={56} className="w-full h-full object-contain" />
                   </div>
-                </GlowCard>
-              ))}
-            </div>
-          </div>
-
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <BsAward className="text-amber-400 flex-shrink-0" size={14} />
+                      <h3 className="text-white font-bold text-sm leading-snug">{edu.title}</h3>
+                    </div>
+                    <p className="text-gray-400 text-sm mb-1">{edu.institution}</p>
+                    <span className="text-[11px] font-mono text-gray-600">{edu.duration}</span>
+                    {edu.gpa && <p className="text-[11px] text-gray-600 mt-2 leading-relaxed">{edu.gpa}</p>}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
-
-export default Education;

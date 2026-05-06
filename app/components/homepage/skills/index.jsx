@@ -1,71 +1,68 @@
-// @flow strict
+"use client";
 
 import { skillsData } from "@/utils/data/skills";
 import { skillsImage } from "@/utils/skill-image";
 import Image from "next/image";
 import Marquee from "react-fast-marquee";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import SectionHeader from "@/app/components/helper/section-header";
 
-function Skills() {
+function SkillPill({ skill }) {
   return (
-    <div id="skills" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
-      <div className="w-[100px] h-[100px] bg-violet-100 rounded-full absolute top-6 left-[42%] translate-x-1/2 filter blur-3xl  opacity-20"></div>
-
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent  w-full" />
-        </div>
+    <motion.div
+      className="mx-2.5 flex items-center gap-2.5 px-4 py-2.5 rounded-xl glass cursor-default group transition-all duration-200 hover:border-violet-500/35 hover:bg-violet-500/8"
+      whileHover={{ scale: 1.08, y: -3 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: "spring", stiffness: 400, damping: 18 }}
+    >
+      <div className="w-5 h-5 flex-shrink-0">
+        <Image src={skillsImage(skill)?.src} alt={skill} width={20} height={20} className="w-full h-full object-contain" />
       </div>
-
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-          <span className="bg-[#2F2F2F] w-fit text-white p-2 px-5 text-xl rounded-md">
-            Skills
-          </span>
-          <span className="w-24 h-[2px] bg-[#2F2F2F]"></span>
-        </div>
-      </div>
-
-      <div className="w-full my-12">
-        <Marquee
-          gradient={false}
-          speed={80}
-          pauseOnHover={true}
-          pauseOnClick={true}
-          delay={0}
-          play={true}
-          direction="left"
-        >
-          {skillsData.map((skill, id) => (
-            <div className="w-36 min-w-fit h-fit flex flex-col items-center justify-center transition-all duration-500 m-3 sm:m-5 rounded-lg group relative hover:scale-[1.15] cursor-pointer"
-              key={id}>
-              <div className="h-full w-full rounded-lg border border-[#1f223c] bg-[#2F2F2F] shadow-none shadow-gray-50 group-hover:border-violet-500 transition-all duration-500">
-                <div className="flex -translate-y-[1px] justify-center">
-                  <div className="w-3/4">
-                    <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
-                  </div>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-3 p-6">
-                  <div className="h-8 sm:h-10">
-                    <Image
-                      src={skillsImage(skill)?.src}
-                      alt={skill}
-                      width={40}
-                      height={40}
-                      className="h-full w-auto rounded-lg"
-                    />
-                  </div>
-                  <p className="text-white text-sm sm:text-lg">
-                    {skill}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </Marquee>
-      </div>
-    </div>
+      <span className="text-sm text-gray-400 group-hover:text-white transition-colors duration-200 whitespace-nowrap font-medium">
+        {skill}
+      </span>
+    </motion.div>
   );
-};
+}
 
-export default Skills;
+export default function Skills() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <section id="skills" ref={ref} className="relative py-24 overflow-hidden">
+      <div className="absolute inset-0 bg-[#06060f]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=50" alt="" className="w-full h-full object-cover opacity-[0.09]" />
+      </div>
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,rgba(124,58,237,0.07),transparent)]" />
+
+      <div className="relative z-10">
+        <div className="max-w-5xl mx-auto px-6">
+          <SectionHeader eyebrow="03 — Skills" title="Tech Stack" subtitle={`${skillsData.length} technologies across frontend, backend, cloud, and AI.`} />
+        </div>
+
+        <motion.div className="space-y-4"
+          initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ delay: 0.3, duration: 0.7 }}>
+          <Marquee speed={38} pauseOnHover gradient={false} direction="left">
+            {skillsData.map((s, i) => <SkillPill key={i} skill={s} />)}
+          </Marquee>
+          <Marquee speed={28} pauseOnHover gradient={false} direction="right">
+            {[...skillsData].reverse().map((s, i) => <SkillPill key={i} skill={s} />)}
+          </Marquee>
+        </motion.div>
+
+        <motion.div className="flex justify-center mt-10"
+          initial={{ opacity: 0 }} animate={isInView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-mono text-gray-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            {skillsData.length} technologies mastered
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

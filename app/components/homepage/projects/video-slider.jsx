@@ -3,157 +3,133 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { FaPlay, FaChevronLeft, FaChevronRight, FaYoutube } from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
+import { motion, useInView } from "framer-motion";
 
-// Helper function to convert YouTube watch URL to embed URL
-const getYouTubeEmbedUrl = (url) => {
+const getEmbedUrl = (url) => {
   if (!url) return "";
-  // Handle youtube.com/watch?v= format
-  const watchMatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
-  if (watchMatch) {
-    return `https://www.youtube.com/embed/${watchMatch[1]}`;
-  }
-  // Handle youtu.be/ format
-  const shortMatch = url.match(/youtu\.be\/([^?]+)/);
-  if (shortMatch) {
-    return `https://www.youtube.com/embed/${shortMatch[1]}`;
-  }
-  // Already embed format
+  const w = url.match(/youtube\.com\/watch\?v=([^&]+)/);
+  if (w) return `https://www.youtube.com/embed/${w[1]}`;
+  const s = url.match(/youtu\.be\/([^?]+)/);
+  if (s) return `https://www.youtube.com/embed/${s[1]}`;
   return url;
 };
 
-const VideoSlider = ({ videos }) => {
+export default function VideoSlider({ videos }) {
   const sliderRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-60px" });
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
 
-  const checkScrollButtons = () => {
-    if (sliderRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
+  const checkScroll = () => {
+    if (!sliderRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+    setCanLeft(scrollLeft > 0);
+    setCanRight(scrollLeft < scrollWidth - clientWidth - 10);
   };
 
-  const scrollLeft = () => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({ left: -350, behavior: "smooth" });
-      setTimeout(checkScrollButtons, 300);
-    }
+  const scroll = (dir) => {
+    sliderRef.current?.scrollBy({ left: dir * 380, behavior: "smooth" });
+    setTimeout(checkScroll, 350);
   };
 
-  const scrollRight = () => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollBy({ left: 350, behavior: "smooth" });
-      setTimeout(checkScrollButtons, 300);
-    }
-  };
-
-  if (!videos || videos.length === 0) return null;
+  if (!videos?.length) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 mt-24">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
-        <div className="flex items-center gap-4">
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-            <FaYoutube />
+    <motion.div
+      ref={sectionRef}
+      className="mt-20 pt-16 border-t border-white/6"
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <motion.div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono"
+            animate={{ opacity: [1, 0.6, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <FaYoutube size={12} />
             Video Demos
-          </span>
-          <h3 className="text-2xl font-bold text-white">Watch in Action</h3>
+          </motion.div>
+          <h3 className="text-xl font-bold text-white">Watch in Action</h3>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={scrollLeft}
-            disabled={!canScrollLeft}
-            className={`p-3 rounded-full border transition-all duration-300 ${
-              canScrollLeft
-                ? "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-red-500/50"
-                : "bg-white/2 border-white/5 text-gray-600 cursor-not-allowed"
-            }`}
-          >
-            <FaChevronLeft size={14} />
-          </button>
-          <button
-            onClick={scrollRight}
-            disabled={!canScrollRight}
-            className={`p-3 rounded-full border transition-all duration-300 ${
-              canScrollRight
-                ? "bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-red-500/50"
-                : "bg-white/2 border-white/5 text-gray-600 cursor-not-allowed"
-            }`}
-          >
-            <FaChevronRight size={14} />
-          </button>
+        {/* Arrow controls */}
+        <div className="flex gap-2">
+          {[
+            { dir: -1, disabled: !canLeft, icon: FaChevronLeft },
+            { dir: 1, disabled: !canRight, icon: FaChevronRight },
+          ].map(({ dir, disabled, icon: Icon }, i) => (
+            <motion.button
+              key={i}
+              onClick={() => scroll(dir)}
+              disabled={disabled}
+              className={`w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 ${
+                disabled
+                  ? "border-white/5 text-gray-700 cursor-not-allowed bg-white/2"
+                  : "border-white/10 text-gray-400 hover:text-white hover:border-red-500/40 hover:bg-red-500/8 bg-white/4"
+              }`}
+              whileTap={disabled ? {} : { scale: 0.9 }}
+            >
+              <Icon size={12} />
+            </motion.button>
+          ))}
         </div>
       </div>
 
-      {/* Videos Horizontal Scroll */}
+      {/* Horizontal scroll */}
       <div
         ref={sliderRef}
-        className="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
-        onScroll={checkScrollButtons}
+        className="flex gap-5 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
+        onScroll={checkScroll}
       >
-        {videos.map((video, index) => (
-          <div
-            key={video.id || index}
-            className="group flex-shrink-0 w-[320px] lg:w-[380px]"
+        {videos.map((video, i) => (
+          <motion.div
+            key={video.id || i}
+            className="group flex-shrink-0 w-[300px] lg:w-[360px]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: i * 0.08, duration: 0.5 }}
+            whileHover={{ y: -4 }}
           >
-            <div className="relative">
-              {/* Card Glow */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="relative bg-white/[0.03] border border-white/8 rounded-xl overflow-hidden hover:border-red-500/25 transition-all duration-300">
+              {/* Red top stripe */}
+              <div className="h-0.5 bg-gradient-to-r from-red-500 to-orange-500" />
 
-              <div className="relative bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-500 hover:border-white/20">
-                {/* Video Thumbnail/Embed */}
-                <div className="relative aspect-video overflow-hidden bg-slate-900">
-                  <iframe
-                    className="w-full h-full"
-                    src={getYouTubeEmbedUrl(video.url)}
-                    title={video.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                  
-                  {/* Play overlay on hover */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center">
-                      <FaPlay className="text-white ml-1" size={24} />
-                    </div>
-                  </div>
-                </div>
+              {/* Iframe */}
+              <div className="relative aspect-video bg-black overflow-hidden">
+                <iframe
+                  className="w-full h-full"
+                  src={getEmbedUrl(video.url)}
+                  title={video.title}
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
 
-                {/* Info */}
-                <div className="p-5">
-                  <h4 className="text-white font-semibold mb-4 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-red-400 group-hover:to-orange-400 transition-all duration-300">
-                    {video.title}
-                  </h4>
+              {/* Info */}
+              <div className="p-4">
+                <h4 className="text-white text-sm font-semibold mb-3 line-clamp-1 group-hover:text-red-400 transition-colors duration-200">
+                  {video.title}
+                </h4>
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                   <Link
                     href={video.videourl}
                     target="_blank"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-red-500/25 hover:scale-105"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 hover:text-red-300 transition-all duration-200"
                   >
-                    <FaPlay size={12} />
+                    <FaPlay size={10} />
                     Watch on YouTube
                   </Link>
-                </div>
+                </motion.div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-
-      {/* Scroll Indicator */}
-      <div className="flex justify-center mt-6">
-        <div className="flex items-center gap-2 text-gray-500 text-sm">
-          <span>Scroll to see more</span>
-          <FaChevronRight size={12} className="animate-pulse" />
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
-};
-
-export default VideoSlider;
+}

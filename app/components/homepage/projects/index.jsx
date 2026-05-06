@@ -1,306 +1,95 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
-import ProjectCard from "./project-card";
+import Link from "next/link";
+import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
 import VideoSlider from "./video-slider";
+import SectionHeader from "@/app/components/helper/section-header";
 
-// Projects data embedded in component
-const projectsData = [
-  {
-    id: 1,
-    name: "ZK-SNARK Private Voting System",
-    description: "A complete zero-knowledge proof voting system with smart contracts, nullifier-based privacy, and modern UI. Implements ZK circuits using Circom for anonymous voting while ensuring vote integrity.",
-    tools: ["Solidity", "Go", "Node.js", "Circom", "ZK-SNARKs", "React"],
-    code: "https://github.com/smithp17/zsnark-voting-system-smartcontract-",
-    demo: "",
-    video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_1",
-    gradient: "from-purple-600 via-violet-600 to-indigo-600",
-    icon: "🗳️"
-  },
-  {
-    id: 2,
-    name: "Botfolio - AI Resume Chatbot",
-    description: "Solved real-world hiring challenges by automating resume screening, reducing recruiter workload by 60%. Job seekers upload resumes and generate unique AI-powered chatbot links with GPT-4.",
-    tools: ["React.js", "OpenAI GPT-4", "Node.js", "Firebase", "Prompt Engineering"],
-    code: "https://github.com/smithp17/Botfolio_Application",
-    demo: "",
-    video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_2",
-    gradient: "from-cyan-600 via-teal-600 to-emerald-600",
-    icon: "🤖"
-  },
-  {
-    id: 3,
-    name: "Event Management Platform",
-    description: "Full-stack EventBrite-style platform with role-based access control featuring regular users, RSO users, and administrators. Includes real-time messaging, event CRUD, and bulk import.",
-    tools: ["React", "TypeScript", "Node.js", "PostgreSQL", "Socket.io", "Docker"],
-    code: "https://github.com/smithp17/Event-Management-App",
-    demo: "",
-    video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_3",
-    gradient: "from-pink-600 via-rose-600 to-red-600",
-    icon: "🎉"
-  },
-  {
-    id: 4,
-    name: "Blockchain AI Analyzer",
-    description: "Ethereum blockchain data analysis tool combining Web3.py with Perplexity AI and ChromaDB vector database. Analyzes transactions, smart contracts, and provides AI-powered insights.",
-    tools: ["Python", "Web3.py", "Perplexity AI", "ChromaDB", "Ethereum", "React"],
-    code: "https://github.com/smithp17/BlockChain-data-AI-analyzer",
-    demo: "",
-    video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_4",
-    gradient: "from-amber-600 via-orange-600 to-yellow-600",
-    icon: "⛓️"
-  },
-  {
-    id: 5,
-    name: "AutoDialer System",
-    description: "Automated dialing system for efficient outbound calling campaigns. Features call scheduling, contact management, and analytics dashboard for tracking campaign performance.",
-    tools: ["Python", "Twilio", "React", "Node.js", "MongoDB", "WebSocket"],
-    code: "https://github.com/smithp17/AutoDialer",
-    demo: "",
-    video: "https://www.youtube.com/embed/YOUR_VIDEO_ID_5",
-    gradient: "from-green-600 via-emerald-600 to-teal-600",
-    icon: "📞"
-  },
-  {
-    id: 6,
-    name: "Credit Card Fraud Detection",
-    description: "End-to-end ML project using Logistic Regression, Random Forest, and XGBoost. Applied PCA for dimensionality reduction and achieved 90% accuracy. Deployed on AWS.",
-    tools: ["Python", "Scikit-learn", "XGBoost", "AWS Lambda", "S3", "Elastic Beanstalk"],
-    code: "https://github.com/smitpatne/fraud-detection",
-    demo: "",
-    video: "",
-    gradient: "from-blue-600 via-indigo-600 to-purple-600",
-    icon: "🔐"
-  },
-  {
-    id: 7,
-    name: "PWC Customer Forecasting",
-    description: "Built ANN classification model to predict customer response in bank marketing campaigns. Implemented LIME for model interpretability, achieving 85% accuracy.",
-    tools: ["Python", "TensorFlow", "Keras", "LIME", "Pandas", "NumPy"],
-    code: "https://github.com/smithp17/PWC-customer-Forecasting-ANN-",
-    demo: "",
-    video: "",
-    gradient: "from-fuchsia-600 via-pink-600 to-rose-600",
-    icon: "📊"
-  }
+const projects = [
+  { id:1, name:"ZK-SNARK Private Voting", desc:"Zero-knowledge proof voting with smart contracts, nullifier-based privacy, and ZK circuits using Circom.", tools:["Solidity","Go","Node.js","Circom","ZK-SNARKs","React"], code:"https://github.com/smithp17/zsnark-voting-system-smartcontract-", demo:"", icon:"🗳️", bar:"from-violet-500 to-indigo-500", glow:"rgba(124,58,237,0.3)", size:"lg" },
+  { id:2, name:"Botfolio AI Chatbot", desc:"AI resume screening chatbot that reduced recruiter workload by 60% using GPT-4.", tools:["React.js","OpenAI GPT-4","Node.js","Firebase"], code:"https://github.com/smithp17/Botfolio_Application", demo:"", icon:"🤖", bar:"from-cyan-500 to-teal-500", glow:"rgba(6,182,212,0.3)", size:"sm" },
+  { id:3, name:"Event Management Platform", desc:"Full-stack EventBrite-style app with RBAC, real-time messaging, and bulk import.", tools:["React","TypeScript","Node.js","PostgreSQL","Socket.io","Docker"], code:"https://github.com/smithp17/Event-Management-App", demo:"", icon:"🎉", bar:"from-pink-500 to-rose-500", glow:"rgba(244,63,94,0.3)", size:"sm" },
+  { id:4, name:"Blockchain AI Analyzer", desc:"Ethereum analysis tool combining Web3.py with Perplexity AI and ChromaDB for contract insights.", tools:["Python","Web3.py","Perplexity AI","ChromaDB","Ethereum","React"], code:"https://github.com/smithp17/BlockChain-data-AI-analyzer", demo:"", icon:"⛓️", bar:"from-amber-500 to-orange-500", glow:"rgba(245,158,11,0.3)", size:"lg" },
+  { id:5, name:"AutoDialer System", desc:"Automated outbound calling platform with scheduling, analytics, and WebSocket support.", tools:["Python","Twilio","React","Node.js","MongoDB"], code:"https://github.com/smithp17/AutoDialer", demo:"", icon:"📞", bar:"from-emerald-500 to-teal-500", glow:"rgba(16,185,129,0.3)", size:"sm" },
+  { id:6, name:"Fraud Detection ML", desc:"End-to-end ML pipeline using Logistic Regression, Random Forest, and XGBoost — 90% accuracy on AWS.", tools:["Python","Scikit-learn","XGBoost","AWS Lambda","S3"], code:"https://github.com/smitpatne/fraud-detection", demo:"", icon:"🔐", bar:"from-blue-500 to-indigo-500", glow:"rgba(37,99,235,0.3)", size:"sm" },
+  { id:7, name:"PWC Customer Forecasting", desc:"ANN classification for bank marketing with LIME interpretability — 85% accuracy.", tools:["Python","TensorFlow","Keras","LIME","Pandas"], code:"https://github.com/smithp17/PWC-customer-Forecasting-ANN-", demo:"", icon:"📊", bar:"from-fuchsia-500 to-pink-500", glow:"rgba(192,38,211,0.3)", size:"sm" },
 ];
 
-// Helper function to convert YouTube watch URL to embed URL
-const getYouTubeEmbedUrl = (url) => {
-  if (!url) return "";
-  // Handle youtube.com/watch?v= format
-  const watchMatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
-  if (watchMatch) {
-    return `https://www.youtube.com/embed/${watchMatch[1]}`;
-  }
-  // Handle youtu.be/ format
-  const shortMatch = url.match(/youtu\.be\/([^?]+)/);
-  if (shortMatch) {
-    return `https://www.youtube.com/embed/${shortMatch[1]}`;
-  }
-  // Already embed format or other
-  return url;
-};
-
-// Videos data with correct embed URLs
-const videosData = [
-  {
-    id: 1,
-    title: "ZK-SNARK Voting System Demo",
-    url: "https://www.youtube.com/embed/eVqU3d6-Jg4",
-    videourl: "https://www.youtube.com/watch?v=eVqU3d6-Jg4"
-  },
-  {
-    id: 2,
-    title: "Botfolio AI Chatbot Demo",
-    url: "https://www.youtube.com/embed/qYJdlz0XpbY",
-    videourl: "https://www.youtube.com/watch?v=qYJdlz0XpbY"
-  },
-  {
-    id: 3,
-    title: "Event Management Platform Demo",
-    url: "https://www.youtube.com/embed/zr-EFnAjN1w",
-    videourl: "https://www.youtube.com/watch?v=zr-EFnAjN1w"
-  },
-  {
-    id: 4,
-    title: "Blockchain AI Analyzer Demo",
-    url: "https://www.youtube.com/embed/BWY_vZ5FWx4",
-    videourl: "https://www.youtube.com/watch?v=BWY_vZ5FWx4"
-  },
-  {
-    id: 5,
-    title: "AutoDialer System Demo",
-    url: "https://www.youtube.com/embed/1_c592pM0SQ",
-    videourl: "https://www.youtube.com/watch?v=1_c592pM0SQ"
-  }
+const videos = [
+  { id:1, title:"ZK-SNARK Voting System Demo", url:"https://www.youtube.com/embed/eVqU3d6-Jg4", videourl:"https://www.youtube.com/watch?v=eVqU3d6-Jg4" },
+  { id:2, title:"Botfolio AI Chatbot Demo", url:"https://www.youtube.com/embed/qYJdlz0XpbY", videourl:"https://www.youtube.com/watch?v=qYJdlz0XpbY" },
+  { id:3, title:"Event Management Platform Demo", url:"https://www.youtube.com/embed/zr-EFnAjN1w", videourl:"https://www.youtube.com/watch?v=zr-EFnAjN1w" },
+  { id:4, title:"Blockchain AI Analyzer Demo", url:"https://www.youtube.com/embed/BWY_vZ5FWx4", videourl:"https://www.youtube.com/watch?v=BWY_vZ5FWx4" },
+  { id:5, title:"AutoDialer System Demo", url:"https://www.youtube.com/embed/1_c592pM0SQ", videourl:"https://www.youtube.com/watch?v=1_c592pM0SQ" },
 ];
 
-const Projects = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const sliderRef = useRef(null);
-
-  // Auto-scroll effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isDragging) {
-        setActiveIndex((prev) => (prev + 1) % projectsData.length);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isDragging]);
-
-  // Scroll to active card
-  useEffect(() => {
-    if (sliderRef.current) {
-      const cardWidth = 420;
-      const gap = 24;
-      const scrollPosition = activeIndex * (cardWidth + gap);
-      sliderRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth"
-      });
-    }
-  }, [activeIndex]);
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? projectsData.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % projectsData.length);
-  };
-
-  const handleMouseDown = (e) => {
-    if (!sliderRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging || !sliderRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  // Touch handlers for mobile
-  const handleTouchStart = (e) => {
-    if (!sliderRef.current) return;
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging || !sliderRef.current) return;
-    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
+function Card({ p, i, isInView }) {
+  const [hov, setHov] = useState(false);
+  const lg = p.size === "lg";
   return (
-    <section id="projects" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950"></div>
-
-      {/* Animated background elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl"></div>
-
-      <div className="relative z-10">
-        {/* Section Header */}
-        <div className="max-w-7xl mx-auto px-6 mb-16">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            <div>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm mb-6">
-                <HiSparkles className="animate-pulse" />
-                Featured Work
-              </span>
-              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-                My{" "}
-                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-                  Projects
-                </span>
-              </h2>
-              <p className="text-gray-400 max-w-xl">
-                A showcase of my recent work spanning blockchain, AI, full-stack development, and more.
-              </p>
-            </div>
-
-            {/* Navigation Arrows */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={handlePrev}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 group"
-              >
-                <FaChevronLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
-              </button>
-              <button
-                onClick={handleNext}
-                className="p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 group"
-              >
-                <FaChevronRight className="group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </div>
+    <motion.div className={`relative group ${lg ? "md:col-span-2" : ""}`}
+      initial={{ opacity:0, y:28 }}
+      animate={isInView ? { opacity:1, y:0 } : {}}
+      transition={{ duration:0.5, delay:0.08+i*0.07, ease:[0.22,1,0.36,1] }}
+      onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}>
+      <motion.div className="relative h-full glass rounded-2xl overflow-hidden cursor-default"
+        whileHover={{ scale:1.015 }} transition={{ type:"spring", stiffness:260, damping:20 }}>
+        {/* Glow */}
+        <AnimatePresence>
+          {hov && (
+            <motion.div className="absolute inset-0 rounded-2xl pointer-events-none"
+              initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}
+              style={{ boxShadow:`inset 0 0 50px 0 ${p.glow}` }} />
+          )}
+        </AnimatePresence>
+        <div className={`h-px bg-gradient-to-r ${p.bar}`} />
+        <div className={`p-6 ${lg ? "lg:p-8" : ""}`}>
+          <div className="flex items-start justify-between mb-5">
+            <motion.span className="text-3xl" animate={hov ? { scale:1.2, rotate:[-5,5,0] } : { scale:1 }} transition={{ duration:0.4 }}>
+              {p.icon}
+            </motion.span>
+            <span className="font-mono text-xs text-gray-700">{String(i+1).padStart(2,"0")}</span>
           </div>
+          <h3 className={`font-bold text-white mb-2 leading-tight ${lg ? "text-xl lg:text-2xl" : "text-lg"}`}>{p.name}</h3>
+          <p className="text-gray-500 text-base leading-relaxed mb-5 line-clamp-2">{p.desc}</p>
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {p.tools.slice(0, lg?6:4).map((t,j) => (
+              <span key={j} className="text-[11px] px-2 py-0.5 rounded-md glass text-gray-500">{t}</span>
+            ))}
+          </div>
+          {p.code && (
+            <motion.div whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }} className="inline-block">
+              <Link href={p.code} target="_blank"
+                className="flex items-center gap-2 text-xs text-gray-500 hover:text-white glass px-3 py-1.5 rounded-lg hover:border-white/20 transition-all duration-200">
+                <FaGithub size={12} /> View Code
+              </Link>
+            </motion.div>
+          )}
         </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
-        {/* Projects Slider */}
-        <div
-          ref={sliderRef}
-          className="flex gap-6 overflow-x-auto pb-8 px-6 lg:px-[calc((100vw-1280px)/2+24px)] cursor-grab active:cursor-grabbing no-scrollbar"
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleMouseUp}
-          onTouchMove={handleTouchMove}
-        >
-          {projectsData.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              index={index}
-              isActive={index === activeIndex}
-              onClick={() => setActiveIndex(index)}
-            />
-          ))}
+export default function Projects() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <section id="projects" ref={ref} className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 bg-[#06060f]" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1920&q=50" alt="" className="w-full h-full object-cover opacity-[0.09]" />
+      </div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_20%_50%,rgba(6,182,212,0.05),transparent)]" />
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
+        <SectionHeader eyebrow="04 — Projects" title="Featured Work" subtitle="Blockchain · AI · Full-Stack · Machine Learning" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {projects.map((p, i) => <Card key={p.id} p={p} i={i} isInView={isInView} />)}
         </div>
-
-        {/* Progress Indicators */}
-        <div className="flex justify-center gap-2 mt-8">
-          {projectsData.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === activeIndex
-                  ? "w-8 bg-gradient-to-r from-purple-500 to-pink-500"
-                  : "w-2 bg-white/20 hover:bg-white/40"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Video Demos Section */}
-        <VideoSlider videos={videosData} />
+        <VideoSlider videos={videos} />
       </div>
     </section>
   );
-};
-
-export default Projects;
+}
